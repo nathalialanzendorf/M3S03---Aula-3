@@ -1,0 +1,27 @@
+#define imagem base
+FROM openjdk:17-jdk-slim-buster
+
+#define autores do dockerfile
+LABEL authors="NathaliaLanzendorf"
+
+#define caminho de execução da aplicação
+WORKDIR /app
+
+#copia os arquivos da pasta X para a pasta Y
+COPY target/hello-0.0.1-SNAPSHOT.jar app.jar
+
+#Seta variável de ambiente e substitui o valor da porta do application.properties
+ENV SERVER_PORT=8080
+
+#expõe a porta
+EXPOSE 8080
+
+#comando de execução da aplicação
+ENTRYPOINT java -jar app.jar
+#CMD ["java", "-jar", "app.jar"]
+
+#instala o java
+##RUN apt-get install openjdk
+
+##Executar 
+## docker build .
