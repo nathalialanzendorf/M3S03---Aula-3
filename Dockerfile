@@ -1,24 +1,22 @@
-#define imagem base
-FROM openjdk:17-jdk-slim-buster
-
+FROM openjdk:17-jdk-slim-buster AS build
 # copia todos os arquivos da aplicação para a imagem
+
 COPY . .
-
 # Comando para tornar o mvnw em executável
-RUN chmod 700 mvnw
 
+RUN chmod 700 mvnw
 # mesma função do install, gerar o .jar
+
 RUN ./mvnw clean package 
 
 # ******* Segunda parte da imagem
 FROM openjdk:17-jdk-slim-buster
 
-#define caminho de execução da aplicação
-WORKDIR /app
+# Cria uma pasta
+WORKDIR app
 
-#copia os arquivos da pasta X para a pasta Y
+# Buscar o jar criado anteriormente
 COPY --from=build target/*.jar app.jar
 
-
-#comando de execução da aplicação
+# Executa o jar gerado
 ENTRYPOINT ["java", "-jar", "app.jar"]
