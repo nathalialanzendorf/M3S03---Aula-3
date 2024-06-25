@@ -1,27 +1,24 @@
 #define imagem base
 FROM openjdk:17-jdk-slim-buster
 
-#define autores do dockerfile
-LABEL authors="NathaliaLanzendorf"
+# copia todos os arquivos da aplicação para a imagem
+COPY . .
+
+# Comando para tornar o mvnw em executável
+RUN chmod 700 mvnw
+
+# mesma função do install, gerar o .jar
+RUN ./mvnw clean package 
+
+# ******* Segunda parte da imagem
+FROM openjdk:17-jdk-slim-buster
 
 #define caminho de execução da aplicação
 WORKDIR /app
 
 #copia os arquivos da pasta X para a pasta Y
-COPY target/hello-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build target/*.jar app.jar
 
-#Seta variável de ambiente e substitui o valor da porta do application.properties
-ENV SERVER_PORT=8080
-
-#expõe a porta
-EXPOSE 8080
 
 #comando de execução da aplicação
-ENTRYPOINT java -jar app.jar
-#CMD ["java", "-jar", "app.jar"]
-
-#instala o java
-##RUN apt-get install openjdk
-
-##Executar 
-## docker build .
+ENTRYPOINT ["java", "-jar", "app.jar"]
